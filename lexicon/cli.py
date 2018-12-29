@@ -36,6 +36,12 @@ def cli():
 
 
 @cli.command()
+def version():
+    """Print version information."""
+    click.echo(lexicon.version())
+
+
+@cli.command()
 @click.argument('word')
 def define(word):
     """Find the definition of the given word."""

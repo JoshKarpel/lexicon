@@ -25,7 +25,7 @@ setup(
     version = find_version(),
     author = 'Josh Karpel',
     author_email = 'josh.karpel@gmail.com',
-    description = 'A tiny command line tool for exploring words.',
+    description = 'A command line tool for exploring words.',
     long_description = open('README.md').read(),
     long_description_content_type = "text/markdown",
     url = 'https://github.com/JoshKarpel/lexicon',
