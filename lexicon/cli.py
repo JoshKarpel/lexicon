@@ -234,26 +234,31 @@ def _fmt_word(word: lexicon.Word, longest_word_len = None) -> str:
     if longest_word_len is None:
         longest_word_len = len(word)
 
-    parts = [f'{word} {"-" * (longest_word_len - len(word) + 1)}>']
-    prefix = ' ' * len(parts[0])
+    start = f'{word} {"-" * (longest_word_len - len(word) + 1)}>'
+    prefix = ' ' * len(start)
 
-    if len(word.definitions) == 0:
+    parts = []
+    num_definitions = len(word.definitions)
+    if num_definitions == 0:
         parts.append('NO DEFINITIONS FOUND\n')
 
     parts.extend(
         click.style(
-            f'{prefix if idx != 0 else ""} {definition}\n',
+            f'{prefix if idx != 0 else ""} {definition}',
             fg = PART_TO_COLOR[definition.part],
         )
         for idx, definition in enumerate(word.definitions)
     )
 
-    return ''.join(parts)
+    return start + '\n'.join(parts)
 
 
 def _fmt_words(words: List[lexicon.Word]) -> str:
+    if len(words) == 0:
+        return 'NO WORDS FOUND'
+
     longest_word_len = max(len(w) for w in words)
-    return '\n'.join(_fmt_word(w, longest_word_len) for w in words)
+    return '\n\n'.join(_fmt_word(w, longest_word_len) for w in words)
 
 
 def _print_words(words: List[lexicon.Word]):
