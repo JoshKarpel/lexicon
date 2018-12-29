@@ -126,15 +126,21 @@ def antonyms(word, limit):
     'word',
 )
 @click.option(
+    '--approximate', '-a',
+    is_flag = True,
+    default = False,
+)
+@click.option(
     '--limit',
     type = int,
     default = 10,
 )
-def rhymes(word, limit):
+def rhymes(word, approximate, limit):
     """Find words that (approximately) rhyme with the given word."""
     with make_spinner():
         words = lexicon.rhymes(
             word,
+            exact = not approximate,
             limit = limit,
         )
     _print_words(words)
@@ -209,7 +215,7 @@ def parts(word, limit):
 def partof(word, limit):
     """Find words that the given word is part of."""
     with make_spinner():
-        words = lexicon.partof(
+        words = lexicon.part_of(
             word,
             limit = limit,
         )

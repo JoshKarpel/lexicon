@@ -80,9 +80,9 @@ def antonyms(word, limit = None) -> List[Word]:
     return _get_words(params, limit = limit)
 
 
-def rhymes(word, limit = None) -> List[Word]:
+def rhymes(word, exact = True, limit = None) -> List[Word]:
     params = {
-        'rel_nry': word,
+        'rel_rhy' if exact else 'rel_nry': word,
     }
     return _get_words(params, limit = limit)
 
@@ -108,7 +108,7 @@ def parts(word, limit = None) -> List[Word]:
     return _get_words(params, limit = limit)
 
 
-def partof(word, limit = None) -> List[Word]:
+def part_of(word, limit = None) -> List[Word]:
     params = {
         'rel_par': word,
     }

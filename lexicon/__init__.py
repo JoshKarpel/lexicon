@@ -12,5 +12,5 @@ from .lexicon import (
     supers,
     subs,
     parts,
-    partof,
+    part_of,
 )
