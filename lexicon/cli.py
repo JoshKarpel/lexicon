@@ -2,6 +2,7 @@ from typing import List
 
 import sys
 import random
+import math
 
 import click
 from click_didyoumean import DYMGroup
@@ -227,30 +228,44 @@ PART_TO_COLOR = {
     'v': 'cyan',
     'adj': 'red',
     'adv': 'yellow',
+    'u': 'magenta',
 }
+
+
+def brace(index, num_definitions):
+    if num_definitions == 1:
+        return '['
+    if num_definitions == 2 and index == 0:
+        return '/'  # todo: better character?
+    elif index == 0:
+        return '/'
+    elif index == num_definitions - 1:
+        return '\\'
+    else:
+        return '|'
 
 
 def _fmt_word(word: lexicon.Word, longest_word_len = None) -> str:
     if longest_word_len is None:
         longest_word_len = len(word)
 
-    start = f'{word} {"-" * (longest_word_len - len(word) + 1)}>'
-    prefix = ' ' * len(start)
+    num_dashes = longest_word_len - len(word) + 1
+    start = f'{click.style(str(word), bold = True)} {"-" * (longest_word_len - len(word) + 1)}'
+    prefix = ' ' * (len(word) + num_dashes + 1)
 
     parts = []
     num_definitions = len(word.definitions)
     if num_definitions == 0:
         parts.append('NO DEFINITIONS FOUND\n')
 
+    center = math.floor((num_definitions - 1) / 2)
+
     parts.extend(
-        click.style(
-            f'{prefix if idx != 0 else ""} {definition}',
-            fg = PART_TO_COLOR[definition.part],
-        )
+        f'{prefix if idx != center else start}{brace(idx, num_definitions)} {click.style(str(definition), fg = PART_TO_COLOR[definition.part])}'
         for idx, definition in enumerate(word.definitions)
     )
 
-    return start + '\n'.join(parts)
+    return '\n'.join(parts)
 
 
 def _fmt_words(words: List[lexicon.Word]) -> str:
