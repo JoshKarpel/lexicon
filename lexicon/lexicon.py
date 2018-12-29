@@ -12,18 +12,11 @@ class Word:
     word: str
     definitions: list
 
-    def fmt(self):
-        s = f'{self.word} -> '
-        prefix = ' ' * len(s)
+    def __str__(self):
+        return self.word
 
-        if len(self.definitions) == 0:
-            s += 'NO DEFINITIONS FOUND\n'
-            return s
-
-        for idx, definition in enumerate(self.definitions):
-            s += (prefix if idx != 0 else '') + definition.fmt() + '\n'
-
-        return s
+    def __len__(self):
+        return len(self.word)
 
 
 @dataclass(frozen = True)
@@ -31,13 +24,12 @@ class Definition:
     part: str
     text: str
 
-    def fmt(self):
+    def __str__(self):
         return f'[{self.part}] {self.text}'
 
 
 def _get_words(params, limit = None):
-    params['md'] = 'dp'
-    params['max'] = limit
+    params = {**params, 'md': 'dp', 'max': limit}
     j = requests.get(API_URL, params = params).json()
 
     words = []
@@ -51,6 +43,13 @@ def _get_words(params, limit = None):
         words.append(w)
 
     return words
+
+
+def define(word) -> List[Word]:
+    params = {
+        'sp': word,
+    }
+    return _get_words(params, limit = 1)
 
 
 def describe(description, limit = None) -> List[Word]:
