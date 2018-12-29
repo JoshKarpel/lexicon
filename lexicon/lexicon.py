@@ -25,7 +25,10 @@ class Definition:
     text: str
 
     def __str__(self):
-        return f'[{self.part}] {self.text}'
+        return f'[{self.part.center(3)}] {self.text}'
+
+    def __len__(self):
+        return len(str(self))
 
 
 def _get_words(params, limit = None):

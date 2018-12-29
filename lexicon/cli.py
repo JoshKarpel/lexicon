@@ -1,8 +1,5 @@
-from typing import List
-
 import sys
 import random
-import math
 
 import click
 from click_didyoumean import DYMGroup
@@ -11,20 +8,25 @@ from halo import Halo
 from spinners import Spinners
 
 import lexicon
+from .clifmt import print_words
 
-SPINNERS = list(name for name in Spinners.__members__ if 'dots' in name)
+SPINNERS = [name for name in Spinners.__members__ if 'dots' in name]
+COLORS = ['red', 'blue', 'cyan', 'magenta', 'yellow', 'red']
 
 
-def make_spinner(*args, **kwargs):
+def spinner(*args, **kwargs):
     return Halo(
         *args,
         spinner = random.choice(SPINNERS),
+        color = random.choice(COLORS),
         stream = sys.stderr,
         **kwargs,
     )
 
 
 CONTEXT_SETTINGS = dict(help_option_names = ['-h', '--help'])
+
+LIMIT_HELP = 'The maximum number of words returned.'
 
 
 @click.group(context_settings = CONTEXT_SETTINGS, cls = DYMGroup)
@@ -34,247 +36,179 @@ def cli():
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 def define(word):
     """Find the definition of the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.define(
             word,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'description',
-)
+@click.argument('description')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def describe(description, limit):
     """Find words that match the given description."""
-    with make_spinner():
+    with spinner():
         words = lexicon.describe(
             description,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def homophones(word, limit):
     """Find words that sound like the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.homophones(
             word,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def synonyms(word, limit):
     """Find words that are synonymous with the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.synonyms(
             word,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def antonyms(word, limit):
     """Find words that are antonymous with the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.antonyms(
             word,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
-    '--approximate', '-a',
-    is_flag = True,
-    default = False,
+    '--exact/--approximate',
+    default = True,
+    help = 'Find exact or approximate rhymes (default: exact).',
 )
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
-def rhymes(word, approximate, limit):
-    """Find words that (approximately) rhyme with the given word."""
-    with make_spinner():
+def rhymes(word, exact, limit):
+    """Find words that rhyme with the given word."""
+    with spinner():
         words = lexicon.rhymes(
             word,
-            exact = not approximate,
+            exact = exact,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def supers(word, limit):
     """Find words that are a superset of the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.supers(
             word,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def subs(word, limit):
     """Find words that are subsets of the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.subs(
             word,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def parts(word, limit):
     """Find words that are parts of the given word."""
-    with make_spinner():
+    with spinner():
         words = lexicon.parts(
             word,
             limit = limit,
         )
-    _print_words(words)
+    print_words(words)
 
 
 @cli.command()
-@click.argument(
-    'word',
-)
+@click.argument('word')
 @click.option(
     '--limit',
     type = int,
     default = 10,
+    help = LIMIT_HELP,
 )
 def partof(word, limit):
     """Find words that the given word is part of."""
-    with make_spinner():
+    with spinner():
         words = lexicon.part_of(
             word,
             limit = limit,
         )
-    _print_words(words)
-
-
-PART_TO_COLOR = {
-    'n': 'green',
-    'v': 'cyan',
-    'adj': 'red',
-    'adv': 'yellow',
-    'u': 'magenta',
-}
-
-
-def brace(index, num_definitions):
-    if num_definitions == 1:
-        return '['
-    if num_definitions == 2 and index == 0:
-        return '/'  # todo: better character?
-    elif index == 0:
-        return '/'
-    elif index == num_definitions - 1:
-        return '\\'
-    else:
-        return '|'
-
-
-def _fmt_word(word: lexicon.Word, longest_word_len = None) -> str:
-    if longest_word_len is None:
-        longest_word_len = len(word)
-
-    num_dashes = longest_word_len - len(word) + 1
-    start = f'{click.style(str(word), bold = True)} {"-" * (longest_word_len - len(word) + 1)}'
-    prefix = ' ' * (len(word) + num_dashes + 1)
-
-    parts = []
-    num_definitions = len(word.definitions)
-    if num_definitions == 0:
-        parts.append('NO DEFINITIONS FOUND\n')
-
-    center = math.floor((num_definitions - 1) / 2)
-
-    parts.extend(
-        f'{prefix if idx != center else start}{brace(idx, num_definitions)} {click.style(str(definition), fg = PART_TO_COLOR[definition.part])}'
-        for idx, definition in enumerate(word.definitions)
-    )
-
-    return '\n'.join(parts)
-
-
-def _fmt_words(words: List[lexicon.Word]) -> str:
-    if len(words) == 0:
-        return 'NO WORDS FOUND'
-
-    longest_word_len = max(len(w) for w in words)
-    return '\n\n'.join(_fmt_word(w, longest_word_len) for w in words)
-
-
-def _print_words(words: List[lexicon.Word]):
-    click.echo(_fmt_words(words))
+    print_words(words)
