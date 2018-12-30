@@ -1,0 +1,4 @@
+requests>=2.21.0
+click>=7.0.0
+click-didyoumean>=0.0.3
+halo>=0.0.22

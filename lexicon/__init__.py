@@ -1,6 +1,6 @@
 __version__ = "0.1.0"
 
-from .lexicon import (
+from .api import (
     Word,
     Definition,
     define,

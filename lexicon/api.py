@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import requests
 
-API_URL = r'https://api.datamuse.com/words?'
+API_URL = r'https://api.datamuse.com/words'
 
 
 @dataclass(frozen = True)

@@ -30,10 +30,14 @@ setup(
     long_description_content_type = "text/markdown",
     url = 'https://github.com/JoshKarpel/lexicon',
     classifiers = [
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.7",
+        "License :: OSI Approved :: MIT License",
     ],
     packages = [
         'lexicon',
@@ -43,9 +47,9 @@ setup(
         lex=lexicon.cli:cli
     ''',
     install_requires = [
-        'requests',
-        'click',
-        'click-didyoumean',
-        'halo',
+        'requests>=2.21.0',
+        'click>=7.0.0',
+        'click-didyoumean>=0.0.3',
+        'halo>=0.0.22',
     ],
 )
