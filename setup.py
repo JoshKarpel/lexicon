@@ -42,14 +42,10 @@ setup(
     packages = [
         'lexicon',
     ],
-    entry_points = '''
-        [console_scripts]
-        lex=lexicon.cli:cli
-    ''',
-    install_requires = [
-        'requests>=2.21.0',
-        'click>=7.0.0',
-        'click-didyoumean>=0.0.3',
-        'halo>=0.0.22',
-    ],
+    entry_points = {
+        'console_scripts': [
+            'lex = lexicon.cli:cli',
+        ],
+    },
+    install_requires = Path('requirements.txt').read_text().splitlines(),
 )

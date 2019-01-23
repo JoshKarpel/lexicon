@@ -13,7 +13,7 @@ pip install git+https://github.com/JoshKarpel/lexicon.git
 
 and then use Lexicon from the command line by running `lex`.
 
-Lexicon requires `Python >3.7`.
+Lexicon requires `Python >= 3.7`.
 
 ## Examples
 
